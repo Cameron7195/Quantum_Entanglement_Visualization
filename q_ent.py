@@ -3,8 +3,6 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
 from matplotlib import cm
 
-PRINT_DENSITY_MATRIX_ON_CHANGE = False
-
 # Function to create a density matrix interpolating between a Bell state and a mixed state
 def create_density_matrix(entanglement_degree):
     # Bell state (Phi+)
@@ -27,8 +25,6 @@ def rotate_qubit(rho, theta, qubit):
     else:
         R = np.kron(np.eye(2), R)
 
-    if PRINT_DENSITY_MATRIX_ON_CHANGE:
-        print(R @ rho @ R.T)
     return R @ rho @ R.T
 
 # Function to calculate measurement probabilities
@@ -63,13 +59,19 @@ bar_container = ax1.bar(range(4), probs, tick_label=["00", "01", "10", "11"])
 ax1.set_ylim(0, 1)
 ax1.set_ylabel('Probability')
 ax1.set_title('Measurement Probabilities')
+for rect, h in zip(bar_container.patches, probs):
+    rect.set_height(h)
+    ax1.text(rect.get_x() + rect.get_width() / 2, h, f'{h:.3f}', ha='center', va='bottom', fontsize=8)
+
 
 # Heat map for density matrix
 rho = create_density_matrix(entanglement_degree)
 rho = rotate_qubit(rho, theta1, 1)
 rho = rotate_qubit(rho, theta2, 2)
 cmap = cm.get_cmap('bwr')  # Blue-White-Red colormap
-heatmap = ax2.imshow(rho.real, cmap=cmap, vmin=-1, vmax=1)
+heatmap = ax2.imshow(rho.real, cmap=cmap, vmin=-0.5, vmax=0.5)
+for (i, j), val in np.ndenumerate(rho.real):
+    ax2.text(j, i, f'{val:.2f}', ha='center', va='center', color='black')
 ax2.set_title('Density Matrix Before Measurement')
 plt.colorbar(heatmap, ax=ax2)
 
@@ -97,6 +99,24 @@ def update(val):
     for rect, h in zip(bar_container.patches, probs):
         rect.set_height(h)
     heatmap.set_data(rho.real)
+
+    # Clear previous annotations
+    for txt in ax1.texts:
+        txt.set_visible(False)
+
+    # Update bars and their annotations
+    for rect, h in zip(bar_container.patches, probs):
+        rect.set_height(h)
+        ax1.text(rect.get_x() + rect.get_width() / 2, h, f'{h:.3f}', ha='center', va='bottom', fontsize=8)
+
+    # Clear previous annotations
+    for txt in ax2.texts:
+        txt.set_visible(False)
+
+    # Add new annotations
+    for (i, j), val in np.ndenumerate(rho.real):
+        ax2.text(j, i, f'{val:.2f}', ha='center', va='center', color='black')
+    
     fig.canvas.draw_idle()
 
 # Connect the update function to the sliders
