@@ -43,8 +43,8 @@ def measurement_probabilities(rho, x, y):
     return probs
 
 # Initial parameters
-theta1, theta2 = 0, 0
-entanglement_degree = 0.5
+theta1, theta2 = 0.0, 0.0
+entanglement_degree = 0.0
 x, y = 0, 0  # Example inputs
 
 # Create the initial density matrix
@@ -81,8 +81,8 @@ ax_theta1 = plt.axes([0.15, 0.1, 0.65, 0.03], facecolor=axcolor)
 ax_theta2 = plt.axes([0.15, 0.15, 0.65, 0.03], facecolor=axcolor)
 ax_entangle = plt.axes([0.15, 0.05, 0.65, 0.03], facecolor=axcolor)
 
-slider_theta1 = Slider(ax_theta1, 'Theta1', -90, 90, valinit=theta1)
-slider_theta2 = Slider(ax_theta2, 'Theta2', -90, 90, valinit=theta2)
+slider_theta1 = Slider(ax_theta1, 'Theta1', -90, 90, valinit=theta1, valstep=2.5)
+slider_theta2 = Slider(ax_theta2, 'Theta2', -90, 90, valinit=theta2, valstep=2.5)
 slider_entangle = Slider(ax_entangle, 'Entanglement', 0, 1, valinit=entanglement_degree)
 
 # Update function
