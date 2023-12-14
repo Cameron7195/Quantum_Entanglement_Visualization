@@ -3,6 +3,8 @@ A quick tool to visualize quantum entanglement!
 
 To replicate the results of the CSHS game, set: 
 
+entanglement = 1
+
 for x = 0: theta1 = 0
 
 for x = 1: theta1 = 45
